@@ -20,8 +20,25 @@ Vagrant.configure('2') do |config|
         aws.tags = {
           'Name'=> "vagrantAWS-Data"
         }
+
+        aws.block_device_mapping = [{
+          'DeviceName' => '/dev/sda1',
+          'Ebs.ValumeSize' => 20,
+          'Ebs.DeleteOnTermination' => true,
+#         'Ebs.DeleteOnTermination' => false,
+          'Ebs.VolumeType' => 'gp2'
+#         'DeviceName' => AWS_DEVICE_NAME,
+#         'Ebs.ValumeSize' => AWS_DEVICE_SIZE,
+#         'Ebs.DeleteOnTermination' => false,
+#         'Ebs.VolumeType' => AWS_DEVICE_VOL_TYPE,
+        }]
+
         override.ssh.username = "ec2-user"
 #       override.ssh.private_key_path = aws_config.fetch("keypair_path")
         override.ssh.private_key_path = '~/.ssh/vagrantAWS-key.pem'
+      end
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "deploy_PythonRH7.yml"
+        ansible.verbose = "true"
       end
 end

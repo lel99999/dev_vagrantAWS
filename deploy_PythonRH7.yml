@@ -1,0 +1,92 @@
+- hosts: pythonRH7
+  #- hosts: wdcdev
+  vars:
+    custom_repo: true
+  vars_files:
+    - ~/RHACCOUNT
+  become: yes
+  become_method: sudo
+
+  pre_tasks:
+    - debug:
+        msg: "Variables: _uid = {{ _uid }}, _pwd = **********"
+#       msg: "Variables: _uid = {{ _uid }}, _pwd = {{ _pwd }}"
+    - name: register RHEL7.5
+      command: "/usr/bin/subscription-manager register --username {{ _uid }} --password {{ _pwd }} --auto-attach --force"
+#     when: _uid != "" and _pwd != ""
+#     command: "/usr/bin/subscription-manager register --username <name> --password <password> --auto-attach"
+    - name: register RHEL7 repo
+      command: "/usr/bin/subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-extras-rpms --enable=rhel-7-server-optional-rpms"
+    - name: register RHEL7 RHSCL Repo
+      shell: "/usr/bin/subscription-manager repos --enable=rhel-server-rhscl-7-rpms"
+    - name: register RHEL7 DevTools
+      shell: "/usr/bin/subscription-manager repos --enable=rhel-7-server-devtools-rpms"
+    - name: list RHEL enabled repos
+      shell: "/usr/bin/subscription-manager repos --list-enabled"
+      register: enabled_repos
+    - debug:
+        msg: "RHEL Enabled Repos: {{ enabled_repos }}"
+  tasks:
+    - name: Install Development Tools
+      shell:  yum groupinstall "Development Tools" -y
+#   - name: download epel
+#     shell:  wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
+#   - name: Install epel
+#     shell:  yum -y localinstall /tmp/epel*rpm
+
+  become: yes
+  become_method: sudo
+
+  roles:
+    - epel7
+#   - emacsRH7
+    - openjdk1.8
+#   - odbc
+#   - postgresql-client
+#   - devtools
+
+#   - devtools7
+#   - python2RH7
+#   - python3RH7
+
+# hosts: research_python
+# become: yes
+# become_method: sudo
+# roles:
+#   - devtools
+#   - devtools6
+#   - {role: python, when: "custom_repo"}
+#   - {role: python-build, when: "not custom_repo"}
+#   - {role: python3, when: "custom_repo"}
+#   - {role: python3-build, when: "not custom_repo"}
+#   - {role: python-libs}
+#   - postgresql-client
+#   - r-core
+#   - r-libs
+#   - r-studio-desktop
+#   - r-studio-server
+#   - r-studio-server-config
+#   - pycharm
+#   - gocd
+#   - stattransfer14
+
+
+
+  post_tasks:
+#   - name: register mime types
+#     shell: update-mime-database /usr/share/mime/packages/
+#   - name: create desktop application
+#     shell:
+#   - name: update desktop database
+#     shell: update-desktop-database ~/.local/share/applications
+#   - name: Install texlive
+#     yum:
+#       name: texlive2016
+#       state: present
+
+#   - name: remove RHEL7.5
+#     command:  "/usr/bin/subscription-manager remove --all"
+#   - name: unregister RHEL7.5
+#     command:  "/usr/bin/subscription-manager unregister"
+#   - name: clean RHEL7.5
+#     command:  "/usr/bin/subscription-manager clean"7
