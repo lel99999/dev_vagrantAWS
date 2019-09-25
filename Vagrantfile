@@ -13,7 +13,7 @@ Vagrant.configure('2') do |config|
 #       aws.keypair_name = aws_config.fetch("keypair_name")
         aws.region = 'us-east-1'
         aws.ami = 'ami-0394fe9914b475c53'
-        aws.security_groups = 'sg-08ce8ddb34a878eaf'
+#       aws.security_groups = 'sg-08ce8ddb34a878eaf'
 #       aws.security_groups = 'vagrant'
 #       aws.security_groups = ['default']
         aws.subnet_id = 'subnet-0708d9c83404b507c'
@@ -23,10 +23,12 @@ Vagrant.configure('2') do |config|
 
         aws.block_device_mapping = [{
           'DeviceName' => '/dev/sda1',
-          'Ebs.ValumeSize' => 20,
+          'Ebs.VolumeSize' => 100,
           'Ebs.DeleteOnTermination' => true,
 #         'Ebs.DeleteOnTermination' => false,
           'Ebs.VolumeType' => 'gp2'
+#         'Ebs.VolumeType' => 'io1'
+#         'Ebs.Iops' => 1000
 #         'DeviceName' => AWS_DEVICE_NAME,
 #         'Ebs.ValumeSize' => AWS_DEVICE_SIZE,
 #         'Ebs.DeleteOnTermination' => false,
@@ -35,10 +37,14 @@ Vagrant.configure('2') do |config|
 
         override.ssh.username = "ec2-user"
 #       override.ssh.private_key_path = aws_config.fetch("keypair_path")
-        override.ssh.private_key_path = '~/.ssh/vagrantAWS-key.pem'
+        override.ssh.private_key_path = '~/.ssh/vagrantAWS-key'
       end
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_PythonRH7.yml"
+#       ansible.groups = {
+#         "vagrantAWS" => ["vagrantAWS-Data"]
+#       }
+        ansible.inventory_path = ".vagrant_hosts"
         ansible.verbose = "true"
       end
 end

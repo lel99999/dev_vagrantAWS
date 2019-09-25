@@ -1,4 +1,4 @@
-- hosts: pythonRH7
+- hosts: vagrantAWS-Data
   #- hosts: wdcdev
   vars:
     custom_repo: true
