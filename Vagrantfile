@@ -18,7 +18,7 @@ Vagrant.configure('2') do |config|
 #       aws.security_groups = ['default']
         aws.subnet_id = 'subnet-0708d9c83404b507c'
         aws.tags = {
-          'Name'=> "vagrantAWS-Data"
+          'Name'=> "vagrantAWS-Data1"
         }
 
         aws.block_device_mapping = [{
